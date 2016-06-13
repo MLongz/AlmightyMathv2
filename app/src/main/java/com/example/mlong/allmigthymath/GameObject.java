@@ -18,6 +18,15 @@ public abstract class GameObject {
     protected  int dx;
     protected int width;
     protected  int height;
+    protected double answer;
+
+    public double getAnswer() {
+        return answer;
+    }
+
+    public void setAnswer(double answer) {
+        this.answer = answer;
+    }
 
     public void setX(int x){
         this.x = x;

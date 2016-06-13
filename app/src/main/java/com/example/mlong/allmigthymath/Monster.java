@@ -14,15 +14,12 @@ public class Monster extends GameObject {
     Animation animation = new Animation();
     private Context context;
 
-
-
-    private double answer;
     private String answerString;
 
     public Monster(Context context, double answer, int y, Bitmap res, int w, int h, int numFrames) {
         x = GamePanel.WIDTH ;
         dx = GamePanel.DIFFICULTSPEED;
-        this.answer = answer;
+        super.answer = answer;
         this.y = y;
         width = w;
         height = h;
@@ -47,19 +44,6 @@ public class Monster extends GameObject {
         }
         animation.setFrames(image);
         animation.setDelay(850);
-    }
-
-    public double getAnswer() {
-        return answer;
-    }
-    @Override
-    public int getX() {
-        return x;
-    }
-
-    @Override
-    public void setX(int x) {
-        this.x = x;
     }
 
     public void update(){

@@ -18,7 +18,6 @@ import java.util.Random;
  */
 public class MathTask extends GameObject{
     private Bitmap image, res;
-    private double answer = 0;
     private double mathX, mathY, numFrames;
     private String mathSymbol;
     private Context context;
@@ -134,11 +133,9 @@ public class MathTask extends GameObject{
             int p = randomGenerator.nextInt(yListTemp.size());
             int rndY = yListTemp.get(p);
             if(i == 0){
-                //generateAnswer = new MathAnswer(context, answer, rndY, BitmapFactory.decodeResource(context.getResources(), R.drawable.monster1), 224, 224, 2);
                 fakeAnswersList.add(new Monster(context, answer, rndY, BitmapFactory.decodeResource(context.getResources(), R.drawable.monster1), 224, 224, 2));
                 yListTemp.remove(p);
             }else {
-               // fakeAnswersList.add(new MathFakeAnswer(context, res, randomGenerator.nextInt(answer), 0, rndY));
                 fakeAnswersList.add(new Monster(context, answer + (fakeAnswersList.size() + randomGenerator.nextInt(10)), rndY, BitmapFactory.decodeResource(context.getResources(), R.drawable.monster1), 224, 224, 2));
                 yListTemp.remove(p);
             }
@@ -146,12 +143,6 @@ public class MathTask extends GameObject{
         }
 
     }
-
-    public double getAnswer() {
-        return answer;
-    }
-
-
 
     public void draw(Canvas canvas){
         //String string = this.mathX + " " + this.mathSymbol + " " + this.mathY;

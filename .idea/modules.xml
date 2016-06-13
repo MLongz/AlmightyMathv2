@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/AllmigthyMath.iml" filepath="$PROJECT_DIR$/AllmigthyMath.iml" />
+      <module fileurl="file://$PROJECT_DIR$/AlmightyMathGit.iml" filepath="$PROJECT_DIR$/AlmightyMathGit.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>

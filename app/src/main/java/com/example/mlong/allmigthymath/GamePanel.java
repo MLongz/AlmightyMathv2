@@ -1,17 +1,12 @@
 package com.example.mlong.allmigthymath;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Rect;
-import android.graphics.drawable.Drawable;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-
-import java.text.BreakIterator;
 
 /**
  * Created by M. Long on 06.06.2016.
@@ -25,6 +20,9 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
     public static int powerBarY = 0;
     public static int powerBarX = 0;
     public static int SCORE = 0;
+    public static int EYEX = 0;
+    public static int EYEY = 0;
+    public static int touchX, touchY;
 
     private MainThread thread;
     private Background bg;
@@ -33,6 +31,9 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
     private PowerBar powerBar;
     private BrainDead brainDead;
     private Score score;
+    private Power laser;
+    private long laserStartTime;
+
 
 
 
@@ -71,10 +72,16 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
         //create background
         bg = new Background(BitmapFactory.decodeResource(getResources(), R.drawable.city2));
         //create player image, width, height and how many frames
-        player = new Player(getContext(), BitmapFactory.decodeResource(getResources(), R.drawable.playerwalk), 210, 210, 4);
+        player = new Player(getContext(), BitmapFactory.decodeResource(getResources(), R.drawable.playeroutfit4), 300, 300, 6);
         powerBar = new PowerBar(getContext(),  BitmapFactory.decodeResource(getResources(), R.drawable.powerbar1), 300, 60, 5); //TODO lag flere powerbar bilder
-        mathTask = new MathTask (getContext(), BitmapFactory.decodeResource(getResources(), R.drawable.taskbubble), player.getX(), player.getY() - 150, 200, 200);
+        mathTask = new MathTask (getContext(), BitmapFactory.decodeResource(getResources(), R.drawable.taskbubble), player.getX() + 100, player.getY() - 150, 200, 200);
         brainDead = new BrainDead(getContext());
+
+        EYEX = player.getX() + 220;
+        EYEY = player.getY() + 20;
+
+        laser =  new Power(BitmapFactory.decodeResource(getResources(),R.drawable.laser_red), 1725, 95, 11, EYEX, EYEY, 1700, 770);
+
         score = new Score(getContext());
 
         powerBarY = powerBar.getY();
@@ -88,15 +95,19 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
     }
 
 
-
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         //create a rectangle from touch xy to check if it collide with answerbubble
         int x = (int) event.getX();
         int y = (int) event.getY();
+        touchX = x;
+        touchY = y;
         Rect touch = new Rect(x, y, 200, 200);
         Rect r = mathTask.getMathAnswerRect();
         Rect rDead = brainDead.getRectangle();
+        player.setAttack(true);
+        laserStartTime = System.nanoTime();
+        laser = new Power(BitmapFactory.decodeResource(getResources(),R.drawable.laser_red), 1725, 95, 11, EYEX, EYEY, touchX, touchY);
 
 //        if(event.getAction()==MotionEvent.ACTION_DOWN) {
 //            if (!player.isPlaying()) {
@@ -137,6 +148,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 
                             }//TODO fiks if testen
                             mathTask.update();
+                            player.setAttack(false);
                         }else {
                             player.setPlaying(false);
 
@@ -147,6 +159,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
                 player.resetScore();
                 SCORE = player.getScore();
                 DIFFICULTSPEED = 10;
+                player = new Player(getContext(), BitmapFactory.decodeResource(getResources(), R.drawable.playeroutfit2), 300, 300, 7);
                 player.setPlaying(true);
                 mathTask.fakeAnswersList.clear();
                 mathTask.getEasyMath();
@@ -162,9 +175,11 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
         }
         if(SCORE >= 410 && SCORE <= 600){
             powerBar = new PowerBar(getContext(),  BitmapFactory.decodeResource(getResources(), R.drawable.powerbar3), 300, 60, 5);
+            player = new Player(getContext(), BitmapFactory.decodeResource(getResources(), R.drawable.playeroutfit4), 300, 300, 6);
         }
         if(SCORE >= 210 && SCORE <= 400){
             powerBar = new PowerBar(getContext(),  BitmapFactory.decodeResource(getResources(), R.drawable.powerbar2), 300, 60, 5);
+            player = new Player(getContext(), BitmapFactory.decodeResource(getResources(), R.drawable.playeroutfit3), 300, 300, 7);
         }
         if(SCORE >= 0 && SCORE <= 200){
             powerBar = new PowerBar(getContext(),  BitmapFactory.decodeResource(getResources(), R.drawable.powerbar1), 300, 60, 5);
@@ -177,13 +192,18 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
         if(player.isPlaying()){
             bg.update();
             player.update();
-            mathTask.update();
+            //mathTask.update();
             powerBar.update();
+            laser.update();
             if(mathTask.fakeAnswersList.get(0).getX() <=  0){
                 player.setPlaying(true);
             }
         }
-
+        long elapsed = (System.nanoTime() - laserStartTime)/1000000;
+        if(elapsed > 1000){
+            player.setAttack(false);
+            laserStartTime = System.nanoTime();
+        }
     }
 
     @Override
@@ -202,6 +222,9 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
             score.draw(canvas);
             if(player.isPlaying() == false){
                 brainDead.draw(canvas);
+            }
+            if(player.isAttack() == true){
+                laser.draw(canvas);
             }
             canvas.restoreToCount(savedState);
         }

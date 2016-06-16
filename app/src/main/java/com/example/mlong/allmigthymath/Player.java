@@ -4,8 +4,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 
-import java.util.zip.CheckedOutputStream;
-
 /**
  * Created by M. Long on 06.06.2016.
  */
@@ -15,6 +13,7 @@ public class Player extends GameObject{
     private double dya;
     private boolean up;
     private boolean playing;
+    private boolean attack;
     private Animation animation = new Animation();
     private long startTime;
     private int x;
@@ -22,7 +21,7 @@ public class Player extends GameObject{
 
     public Player(Context context, Bitmap res, int w, int h, int numFrames) {
         x = 100;
-        y = 750;
+        y = 650;
         dy = 0;
         score = 0;
         width = w;
@@ -40,8 +39,16 @@ public class Player extends GameObject{
         }
 
         animation.setFrames(image);
-        animation.setDelay(150);
+        animation.setDelay(70);
         startTime = System.nanoTime();
+    }
+
+    public boolean isAttack() {
+        return attack;
+    }
+
+    public void setAttack(boolean attack) {
+        this.attack = attack;
     }
 
     public void setUp(boolean b){

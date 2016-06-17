@@ -8,7 +8,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -26,7 +25,10 @@ public class MathTask extends GameObject{
     private String string;
     private Brain brain;
     private Rect rectAnswer;
+    private List<Integer> easyNumberList;
+
     public List<Monster> fakeAnswersList;
+
 
 
     public MathTask( Context context, Bitmap res, int x, int y, int w, int h ){
@@ -37,6 +39,13 @@ public class MathTask extends GameObject{
         yList.add(270);
         yList.add(520);
         yList.add(770);
+
+        easyNumberList = new ArrayList<>();
+        easyNumberList.add(2);
+        easyNumberList.add(4);
+        easyNumberList.add(6);
+        easyNumberList.add(8);
+        easyNumberList.add(10);
 
         super.x = x;
         super.y = y;
@@ -66,9 +75,15 @@ public class MathTask extends GameObject{
     public void getEasyMath(){
         this.mathX = randomGenerator.nextInt(10) + 1;
         this.mathY = randomGenerator.nextInt(10) + 1;
-        int rndTask = 3;
-        if(mathX < mathY && rndTask == 3){
-            getEasyMath();
+        int rndTask = randomGenerator.nextInt(3) + 1;
+        if(rndTask == 3){
+            this.mathX = easyNumberList.get(randomGenerator.nextInt(easyNumberList.size()));
+            this.mathY = 2;
+            createMathtask(mathX, mathY, rndTask, 2);
+            int intx = (int) mathX;
+            int inty = (int) mathY;
+            string = intx + " " + this.mathSymbol + " " + inty;
+            brain = new Brain(context, string, BitmapFactory.decodeResource(context.getResources(), R.drawable.brain), x, y, 200, 200, 2);
         }else {
             createMathtask(mathX, mathY, rndTask, 2);
             int intx = (int) mathX;
@@ -145,10 +160,7 @@ public class MathTask extends GameObject{
     }
 
     public void draw(Canvas canvas){
-        //String string = this.mathX + " " + this.mathSymbol + " " + this.mathY;
-        //canvas.drawBitmap(drawTextToBitmap(context, image, string, 61, 61, 61, 0), x, y, null);
         brain.draw(canvas);
-        //generateAnswer.draw(canvas);
         for(int i  = 0; i < fakeAnswersList.size(); i++){
             fakeAnswersList.get(i).draw(canvas);
         }

@@ -14,6 +14,8 @@ public class BrainDead extends GameObject {
     private Context context;
 
     public BrainDead(Context context) {
+        super.x =  200;
+        super.y = 150;
         height = GamePanel.HEIGTH / 2;
         width = GamePanel.WIDTH / 2 + height;
         spritesheet = BitmapFactory.decodeResource(context.getResources(), R.drawable.braindead);

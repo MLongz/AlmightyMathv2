@@ -43,7 +43,7 @@ public class Monster extends GameObject {
             answerString = temp;
         }
         animation.setFrames(image);
-        animation.setDelay(1450);
+        animation.setDelay(2000);
     }
 
     public void update(){

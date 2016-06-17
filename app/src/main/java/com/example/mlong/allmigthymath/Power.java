@@ -1,7 +1,9 @@
 package com.example.mlong.allmigthymath;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.media.MediaPlayer;
 
 /**
  * Created by Long Huynh on 16.06.2016.
@@ -9,14 +11,16 @@ import android.graphics.Canvas;
 public class Power extends GameObject{
     private Bitmap spritesheet;
     private Animation animation = new Animation();
-    float ta;
+    private float ta;
+    private final MediaPlayer mp;
 
-    public Power(Bitmap res, int w, int h, int numFrames, int x, int y, int targetx, int targety) {
+    public Power(Context context, Bitmap res, int w, int h, int numFrames, int x, int y, int targetx, int targety) {
         width = w;
         height = h;
         spritesheet = res;
         super.x = x;
         super.y = y;
+        mp = MediaPlayer.create(context, R.raw.laser2);
 
         float angle = (float) Math.toDegrees(Math.atan2(targety - GamePanel.EYEY, targetx - GamePanel.EYEX));
         if(angle < 0){
@@ -32,7 +36,11 @@ public class Power extends GameObject{
         }
         ta = angle;
         animation.setFrames(image);
-        animation.setDelay(50);
+        animation.setDelay(20);
+    }
+
+    public void soundStart(){
+        mp.start();
     }
 
     public void draw(Canvas canvas){

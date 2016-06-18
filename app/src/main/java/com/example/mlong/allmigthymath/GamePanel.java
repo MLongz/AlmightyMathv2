@@ -24,18 +24,25 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
     public static int EYEY = 0;
     public static int touchX, touchY;
 
+
     private MainThread thread;
     private Background bg;
+    private StartMenu startMenu;
+    private StartMenuItems startGame, highScore, options;
     private Player player, outfit1, outfit2, outfit3, outfit4;
     private MathTask mathTask;
     private PowerBar powerBar;
     private BrainDead brainDead;
     private Score score;
     private Power laser;
+    private Explosion explosion;
+
     private long laserStartTime;
     private long explosionStartTime;
-    private Explosion explosion;
-    private boolean monsterClicked = false;
+    private long monsterDisapearStartTime;
+
+    private boolean showMenu;
+    private boolean getNewTask;
 
 
 
@@ -76,9 +83,14 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
     public void surfaceCreated(SurfaceHolder holder) {
         //create background
         bg = new Background(getContext(), BitmapFactory.decodeResource(getResources(), R.drawable.city2));
+        //create start menu and menu-items
+        startMenu = new StartMenu(getContext());
+        startGame = new StartMenuItems(getContext(),BitmapFactory.decodeResource(getResources(), R.drawable.start), 406, 65, 1, 750, 250);
+        highScore = new StartMenuItems(getContext(),BitmapFactory.decodeResource(getResources(), R.drawable.highscore), 406, 65, 1, 750, 360);
+        options = new StartMenuItems(getContext(),BitmapFactory.decodeResource(getResources(), R.drawable.options), 406, 65, 1, 750, 470);
         //create player image, width, height and how many frames
         player = new Player(getContext(), BitmapFactory.decodeResource(getResources(), R.drawable.playeroutfit4), 300, 300, 6);
-
+        //create all the unlockable outfits
         outfit1 = new Player(getContext(), BitmapFactory.decodeResource(getResources(), R.drawable.playeroutfit1), 300, 300, 6);
         outfit1.setX(player.getX());
         outfit2 = new Player(getContext(), BitmapFactory.decodeResource(getResources(), R.drawable.playeroutfit2), 300, 300, 6);
@@ -87,87 +99,92 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
         outfit3.setX(outfit2.getX() + 400);
         outfit4 = new Player(getContext(), BitmapFactory.decodeResource(getResources(), R.drawable.playeroutfit4), 300, 300, 6);
         outfit4.setX(outfit3.getX() + 400);
-
-        powerBar = new PowerBar(getContext(),  BitmapFactory.decodeResource(getResources(), R.drawable.powerbar1), 300, 60, 5); //TODO lag flere powerbar bilder
-        mathTask = new MathTask (getContext(), BitmapFactory.decodeResource(getResources(), R.drawable.taskbubble), player.getX() + 100, player.getY() - 150, 200, 200);
+        //create the powerbar
+        powerBar = new PowerBar(getContext(),
+                BitmapFactory.decodeResource(getResources(), R.drawable.powerbar1), 300, 60, 5); //TODO lag flere powerbar bilder
+        //create vaiable that generate mathtasks
+        mathTask = new MathTask (getContext(),
+                BitmapFactory.decodeResource(getResources(), R.drawable.taskbubble), player.getX() + 100, player.getY() - 150, 200, 200);
+        //create the braindead screen
         brainDead = new BrainDead(getContext());
-        explosion = new Explosion(0, 0, BitmapFactory.decodeResource(getResources(), R.drawable.explosion), 240, 205, 8);
-
+        //get the player eyes xy
         EYEX = player.getX() + 240;
         EYEY = player.getY() + 20;
-
-        laser =  new Power(getContext(), BitmapFactory.decodeResource(getResources(),R.drawable.laser_red3), 1725, 95, 7, EYEX, EYEY, 1700, 770);
-
+        //create the laser and explosion
+        laser = new Power(getContext(),
+                BitmapFactory.decodeResource(getResources(),R.drawable.laser_red), 1725, 95, 11, EYEX, EYEY, touchX, touchY);
+        explosion = new Explosion(0, 0,
+                BitmapFactory.decodeResource(getResources(), R.drawable.explosion), 336, 287, 8);
+        //create the score screen
         score = new Score(getContext());
 
         powerBarY = powerBar.getY();
         powerBarY = powerBar.getX();
+        //turn off/on all the necessary variables before games start
+        mathTask.getEasyMath();
+        player.setPlaying(false);
+        player.setAttack(false);
+        explosion.setExploded(false);
+        showMenu = true;
+        getNewTask = false;
 
         //we can safely create the game loop
         thread.setRunning(true);
         thread.start();
-        mathTask.getEasyMath();
-        player.setPlaying(false);
     }
 
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         //create a rectangle from touch xy to check if it collide with answerbubble
-        int x = (int) event.getX();
-        int y = (int) event.getY();
-        touchX = x;
-        touchY = y;
-        Rect touch = new Rect(x, y, 200, 200);
-        Rect r = mathTask.getMathAnswerRect();
+        touchX  = (int) event.getX();
+        touchY  = (int) event.getY();
+
+        //Rect touch = new Rect(x, y, 200, 200);
+        Rect rStartGame = startGame.getRectangle();
         Rect rDead = brainDead.getRectangle();
-        long elapsed = (System.nanoTime() - laserStartTime)/1000000;
+//        explosionStartTime = System.nanoTime();
+//        explosion = new Explosion(touchX,touchY,
+//                BitmapFactory.decodeResource(getResources(), R.drawable.explosion), 336, 287, 8);
+//        explosion.setExploded(true);
 
         try{
+            if(showMenu == true){
+                if(rStartGame.contains(touchX, touchY)){
+                    player.setPlaying(true);
+                    showMenu = false;
+                }
+            }
             if(player.isPlaying() == true){
-                player.setAttack(true);
-                explosionStartTime = System.nanoTime();
                 laserStartTime = System.nanoTime();
                 laser = new Power(getContext(), BitmapFactory.decodeResource(getResources(),R.drawable.laser_red), 1725, 95, 11, EYEX, EYEY, touchX, touchY);
+                player.setAttack(true);
                 laser.soundStart();
-                if(elapsed > 150){
-                    for(int i = 0; i < mathTask.fakeAnswersList.size(); i ++){
-                        Rect tempr = mathTask.fakeAnswersList.get(i).getRectangle();
-                        if(tempr.contains(x, y) && player.isPlaying() == true){
-                            if(mathTask.getAnswer() == mathTask.fakeAnswersList.get(i).getAnswer()){
-                                changePowerBar();
-                                player.setScore(10);
-                                mathTask.fakeAnswersList.clear();
-                                if(SCORE >= 1010){
-                                    DIFFICULTSPEED = 10;
-                                    mathTask.getHardMath();
-                                }
-                                if(SCORE >= 510 && SCORE <= 1000){
-                                    DIFFICULTSPEED = 10;
-                                    mathTask.getHardMath();
-                                }
-                                if(SCORE >= 110 && SCORE <= 500){
-                                    DIFFICULTSPEED = 5;
-                                    mathTask.getMediumMath();
-                                }
-                                if(SCORE >= 0 && SCORE <= 100){
-                                    DIFFICULTSPEED = 5;
-                                    mathTask.getEasyMath();
-                                }
-                                mathTask.update();
-                            }else {
-                                player.setPlaying(false);
-                                bg.soundPause();
-                            }
+                for(int i = 0; i < mathTask.fakeAnswersList.size(); i ++){
+                    Rect tempr = mathTask.fakeAnswersList.get(i).getRectangle();
+                    if(tempr.contains(touchX, touchY) && player.isPlaying() == true){
+                        if(mathTask.getAnswer() == mathTask.fakeAnswersList.get(i).getAnswer()){
+                            explosionStartTime = System.nanoTime();
+                            explosion = new Explosion(mathTask.fakeAnswersList.get(i).getX(), mathTask.fakeAnswersList.get(i).getY(),
+                                    BitmapFactory.decodeResource(getResources(), R.drawable.explosion), 336, 287, 8);
+                            explosion.setExploded(true);
+                            changePowerBar();
+                            player.setScore(10);
+                            mathTask.fakeAnswersList.remove(i);
+                            monsterDisapearStartTime = System.nanoTime();
+                            getNewTask = true;
+                        }else{
+                            player.setPlaying(false);
+                            bg.soundPause();
                         }
                     }
-                    laserStartTime = System.nanoTime();
                 }
-            }else{
+            }else if(showMenu == false){
                 player.resetScore();
                 SCORE = player.getScore();
                 DIFFICULTSPEED = 5;
                 player.setPlaying(true);
+                showMenu = false;
                 mathTask.fakeAnswersList.clear();
                 mathTask.getEasyMath();
                 bg.soundStart();
@@ -197,7 +214,12 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
     public void update() {
         SCORE = player.getScore();
         //update the background only if the payer is playing
-        if(player.isPlaying() != true){
+        if(showMenu == true || player.isPlaying() == false){
+            startMenu.update();
+            startGame.update();
+            highScore.update();
+            options.update();
+
             bg.update();
 
             outfit1.update();
@@ -209,18 +231,47 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
             bg.update();
             player.update();
             powerBar.update();
-            laser.update();
-            mathTask.update();
+            mathTask.update(0);
+            if(player.isAttack() == true){
+                laser.update();
+                long elapsed = (System.nanoTime() - laserStartTime)/1000000;
+                if(elapsed > 500){
+                    player.setAttack(false);
+                }
+            }
+            if(explosion.isExploded() == true){
+                explosion.update();
+                long elapsed2 = (System.nanoTime() - explosionStartTime)/1000000;
+                if(elapsed2 > 500){
+                    explosion.setExploded(false);
+                }
+            }
+            if(getNewTask == true){
+                mathTask.update(30);
+                long elapsed3 = (System.nanoTime() - monsterDisapearStartTime)/1000000;
+                if(elapsed3 > 1000){
+                    mathTask.fakeAnswersList.clear();
+                    if(SCORE >= 1010){
+                        DIFFICULTSPEED = 10;
+                        mathTask.getHardMath();
+                    }
+                    if(SCORE >= 510 && SCORE <= 1000){
+                        DIFFICULTSPEED = 10;
+                        mathTask.getHardMath();
+                    }
+                    if(SCORE >= 110 && SCORE <= 500){
+                        DIFFICULTSPEED = 5;
+                        mathTask.getMediumMath();
+                    }
+                    if(SCORE >= 0 && SCORE <= 100){
+                        DIFFICULTSPEED = 5;
+                        mathTask.getEasyMath();
+                    }
+                    getNewTask = false;
+                }
+            }
             if(mathTask.fakeAnswersList.get(0).getX() <=  0){
                 player.setPlaying(false);
-            }
-            long elapsed = (System.nanoTime() - laserStartTime)/1000000;
-            if(elapsed > 500){
-                player.setAttack(false);
-                laserStartTime = System.nanoTime();
-            }
-            if(monsterClicked == true){
-               // explosion.update();
             }
         }
     }
@@ -242,8 +293,19 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
                 score.draw(canvas);
                 player.draw(canvas);
             }
-            if(player.isPlaying() == false){
+            if(player.isPlaying() == false && showMenu == false){
                 brainDead.draw(canvas);
+                outfit1.draw(canvas);
+                outfit2.draw(canvas);
+                outfit3.draw(canvas);
+                outfit4.draw(canvas);
+            }
+            if(showMenu == true){
+                startMenu.draw(canvas);
+                startGame.draw(canvas);
+                highScore.draw(canvas);
+                options.draw(canvas);
+
                 outfit1.draw(canvas);
                 outfit2.draw(canvas);
                 outfit3.draw(canvas);
@@ -251,7 +313,9 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
             }
             if(player.isAttack() == true){
                 laser.draw(canvas);
-                //explosion.draw(canvas);
+            }
+            if(explosion.isExploded() == true){
+                explosion.draw(canvas);
             }
             canvas.restoreToCount(savedState);
         }

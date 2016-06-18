@@ -50,7 +50,7 @@ public class PowerBar extends GameObject {
 
 
     public void draw(Canvas canvas){
-        canvas.drawBitmap(drawTextToBitmap(context, animation.getImage(), String.valueOf(""), 61, 61, 61, 0, 0), x, y, null);
+        canvas.drawBitmap(drawTextToBitmap(context, animation.getImage(), String.valueOf(""), 61, 61, 61, 0, 0, 20), x, y, null);
     }
 
 

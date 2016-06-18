@@ -63,11 +63,10 @@ public class MathTask extends GameObject{
     public Rect getMathAnswerRect(){
         return rectAnswer = fakeAnswersList.get(0).getRectangle();
     }
-    public void update(){
+    public void update(int y){
         brain.update();
-        //generateAnswer.update();
         for(int i  = 0; i < fakeAnswersList.size(); i++){
-         fakeAnswersList.get(i).update();
+         fakeAnswersList.get(i).update(y);
         }
 
     }
@@ -83,13 +82,13 @@ public class MathTask extends GameObject{
             int intx = (int) mathX;
             int inty = (int) mathY;
             string = intx + " " + this.mathSymbol + " " + inty;
-            brain = new Brain(context, string, BitmapFactory.decodeResource(context.getResources(), R.drawable.brain), x, y, 200, 200, 2);
+            brain = new Brain(context, string, BitmapFactory.decodeResource(context.getResources(), R.drawable.brain2), x - 10, y - 50, 250, 250, 2);
         }else {
             createMathtask(mathX, mathY, rndTask, 2);
             int intx = (int) mathX;
             int inty = (int) mathY;
             string = intx + " " + this.mathSymbol + " " + inty;
-            brain = new Brain(context, string, BitmapFactory.decodeResource(context.getResources(), R.drawable.brain), x, y, 200, 200, 2);
+            brain = new Brain(context, string, BitmapFactory.decodeResource(context.getResources(), R.drawable.brain2), x - 10, y - 50, 250, 250, 2);
         }
     }
 
@@ -104,7 +103,7 @@ public class MathTask extends GameObject{
             int intx = (int) mathX;
             int inty = (int) mathY;
             string = intx + " " + this.mathSymbol + " " + inty;
-            brain = new Brain(context, string, BitmapFactory.decodeResource(context.getResources(), R.drawable.brain2), x - 10, y - 50, 250, 250, 5);
+            brain = new Brain(context, string, BitmapFactory.decodeResource(context.getResources(), R.drawable.brain3), x - 50, y - 130, 350, 350, 5);
         }
     }
 

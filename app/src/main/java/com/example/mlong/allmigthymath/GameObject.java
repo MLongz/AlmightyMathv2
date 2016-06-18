@@ -81,7 +81,7 @@ public abstract class GameObject {
         return new Rect(x, y, x+width, y+height);
     }
 
-    public Bitmap drawTextToBitmap(Context gContext, Bitmap bitmap, String gText, int r, int g, int b, int extrayX, int extraY) {
+    public Bitmap drawTextToBitmap(Context gContext, Bitmap bitmap, String gText, int r, int g, int b, int extrayX, int extraY, int textSize) {
         Resources resources = gContext.getResources();
         float scale = resources.getDisplayMetrics().density;
 
@@ -100,7 +100,7 @@ public abstract class GameObject {
         // text color - #3D3D3D
         paint.setColor(Color.rgb(r, g, b));
         // text size in pixels
-        paint.setTextSize((int) (17 * scale));
+        paint.setTextSize((int) (textSize * scale));
         // text shadow
         //paint.setShadowLayer(1f, 0f, 1f, Color.BLACK);
 

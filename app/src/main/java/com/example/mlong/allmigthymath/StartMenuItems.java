@@ -5,26 +5,29 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 
 /**
- * Created by M. Long on 10.06.2016.
+ * Created by Long Huynh on 18.06.2016.
  */
-public class Brain extends GameObject {
+public class StartMenuItems extends GameObject {
     private Bitmap spritesheet;
     Animation animation = new Animation();
+    private int numFrames;
     private Context context;
-    private String string;
 
-    public Brain(Context context, String string, Bitmap res, int x, int y, int w, int h, int numFrames) {
-        this.string = string;
+    public StartMenuItems(Context context, Bitmap bitmap, int width, int height, int numFrames, int x, int y) {
         super.x = x;
         super.y = y;
-        width = w;
-        height = h;
+        super.height = height;
+        super.width = width;
+        spritesheet = bitmap;
+        spritesheet = Bitmap.createScaledBitmap(spritesheet, width, height, true);
         this.context = context;
-        spritesheet = res;
+        this.numFrames = numFrames;
 
 
         //animation frames for the player image
-        Bitmap[] image = new Bitmap[numFrames];
+        Bitmap[] image = new Bitmap[1];
+
+
         for (int i = 0; i < image.length; i++) {
             image[i] = Bitmap.createBitmap(spritesheet, i * width, 0, width, height);
         }
@@ -44,14 +47,12 @@ public class Brain extends GameObject {
         this.x = x;
     }
 
-    public void update(){
+    public void update() {
         animation.update();
     }
 
 
-    public void draw(Canvas canvas){
-        canvas.drawBitmap(drawTextToBitmap(context, animation.getImage(), string, 255, 255, 255, 0, 0, 20), x, y, null);
+    public void draw(Canvas canvas) {
+        canvas.drawBitmap(animation.getImage(), x, y, null);
     }
-
-
 }

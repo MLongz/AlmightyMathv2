@@ -9,9 +9,9 @@ import android.graphics.Canvas;
 public class Explosion extends GameObject {
     private Bitmap spritesheet;
     Animation animation = new Animation();
+    private boolean exploded;
 
     public Explosion(int x, int y, Bitmap res, int w, int h, int numFrames) {
-        dx = GamePanel.DIFFICULTSPEED;
         super.x = x;
         super.y = y;
         width = w;
@@ -27,11 +27,20 @@ public class Explosion extends GameObject {
         }
 
         animation.setFrames(image);
-        animation.setDelay(100);
+        animation.setDelay(50);
     }
 
     public void update(){
        animation.update();
+    }
+
+
+    public boolean isExploded() {
+        return exploded;
+    }
+
+    public void setExploded(boolean exploded) {
+        this.exploded = exploded;
     }
 
 

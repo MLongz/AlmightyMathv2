@@ -41,7 +41,7 @@ public class Score extends GameObject {
 
 
     public void draw(Canvas canvas){
-        canvas.drawBitmap(drawTextToBitmap(context, animation.getImage(), String.valueOf(": " + GamePanel.SCORE), 61, 61, 61, 10, 0), x, y, null);
+        canvas.drawBitmap(drawTextToBitmap(context, animation.getImage(), String.valueOf(": " + GamePanel.SCORE), 61, 61, 61, 10, 0, 20), x, y, null);
     }
 
 

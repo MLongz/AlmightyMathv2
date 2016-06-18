@@ -20,7 +20,7 @@ public class Monster extends GameObject {
         x = GamePanel.WIDTH ;
         dx = GamePanel.DIFFICULTSPEED;
         super.answer = answer;
-        this.y = y;
+        super.y = y;
         width = w;
         height = h;
         spritesheet = res;
@@ -46,8 +46,9 @@ public class Monster extends GameObject {
         animation.setDelay(2000);
     }
 
-    public void update(){
+    public void update(int y){
         x -= dx;
+        super.y -= y;
         animation.update();
         if(x < -GamePanel.WIDTH){
             x = GamePanel.WIDTH;
@@ -56,6 +57,6 @@ public class Monster extends GameObject {
 
 
     public void draw(Canvas canvas){
-        canvas.drawBitmap(drawTextToBitmap(context, animation.getImage(), answerString, 255, 255, 255, 0, 30), x, y, null);
+        canvas.drawBitmap(drawTextToBitmap(context, animation.getImage(), answerString, 255, 255, 255, 0, 30, 20), x, y, null);
     }
 }

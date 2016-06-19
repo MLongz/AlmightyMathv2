@@ -14,11 +14,11 @@ public class BrainDead extends GameObject {
     private Context context;
 
     public BrainDead(Context context) {
-        super.x =  200;
-        super.y = 150;
-        height = GamePanel.HEIGTH / 2;
-        width = GamePanel.WIDTH / 2 + height;
-        spritesheet = BitmapFactory.decodeResource(context.getResources(), R.drawable.braindead);
+        super.x =  126;
+        super.y = 120;
+        height = 513;
+        width = 1654;
+        spritesheet = BitmapFactory.decodeResource(context.getResources(), R.drawable.gameover);
         spritesheet = Bitmap.createScaledBitmap(spritesheet, width, height, true);
         this.context = context;
 
@@ -52,7 +52,7 @@ public class BrainDead extends GameObject {
 
 
     public void draw(Canvas canvas){
-        canvas.drawBitmap(drawTextToBitmap(context, animation.getImage(), String.valueOf(GamePanel.SCORE), 61, 61, 61, 5, 21, 30), x, y, null);
+        canvas.drawBitmap(drawTextToBitmap(context, animation.getImage(), String.valueOf(GamePanel.SCORE), 225, 225, 225, 50, 1, 40), x, y, null);
     }
 
 

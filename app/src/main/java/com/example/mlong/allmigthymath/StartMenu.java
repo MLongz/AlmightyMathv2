@@ -14,11 +14,11 @@ public class StartMenu extends GameObject {
     private Context context;
 
     public StartMenu(Context context) {
-        super.x = 130;
-        super.y = 200;
-        height = 400;
-        width = 1654;
-        spritesheet = BitmapFactory.decodeResource(context.getResources(), R.drawable.startmenu);
+        super.x = 430;
+        super.y = 30;
+        height = 299;
+        width = 1036;
+        spritesheet = BitmapFactory.decodeResource(context.getResources(), R.drawable.title);
         spritesheet = Bitmap.createScaledBitmap(spritesheet, width, height, true);
         this.context = context;
 

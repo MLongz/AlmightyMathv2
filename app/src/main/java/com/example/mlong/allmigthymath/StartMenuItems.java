@@ -36,17 +36,6 @@ public class StartMenuItems extends GameObject {
         animation.setDelay(100);
     }
 
-
-    @Override
-    public int getX() {
-        return x;
-    }
-
-    @Override
-    public void setX(int x) {
-        this.x = x;
-    }
-
     public void update() {
         animation.update();
     }

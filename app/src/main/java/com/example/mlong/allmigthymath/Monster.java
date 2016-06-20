@@ -14,6 +14,7 @@ public class Monster extends GameObject {
     Animation animation = new Animation();
     private Context context;
 
+
     private String answerString;
 
     public Monster(Context context, double answer, int y, Bitmap res, int w, int h, int numFrames) {
@@ -43,7 +44,7 @@ public class Monster extends GameObject {
             answerString = temp;
         }
         animation.setFrames(image);
-        animation.setDelay(2000);
+        animation.setDelay(200);
     }
 
     public void update(int y){

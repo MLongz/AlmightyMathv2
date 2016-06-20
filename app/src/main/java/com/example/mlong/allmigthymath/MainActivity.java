@@ -13,20 +13,16 @@ import com.google.android.gms.games.leaderboard.Leaderboards;
 import com.google.example.games.basegameutils.BaseGameActivity;
 import com.google.example.games.basegameutils.GameHelper;
 
-public class MainActivity extends BaseGameActivity implements View.OnClickListener {
+public class MainActivity extends BaseGameActivity implements View.OnClickListener{
     GamePanel gp;
     GameHelper gameHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main2);
+        setContentView(R.layout.activity_main);
         findViewById(R.id.sign_in_button).setOnClickListener(this);
         findViewById(R.id.sign_out_button).setOnClickListener(this);
-        findViewById(R.id.add_score).setOnClickListener(this);
-        findViewById(R.id.show_leaderboard).setOnClickListener(this);
-        findViewById(R.id.show_achievement).setOnClickListener(this);
-
         gp = new GamePanel(this);
         gameHelper = new GameHelper(this, GameHelper.CLIENT_GAMES);
         gameHelper.setup(this);
@@ -41,7 +37,7 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
     @Override
     public void onSignInSucceeded() {
         findViewById(R.id.sign_in_button).setVisibility(View.GONE);
-        findViewById(R.id.sign_out_button).setVisibility(View.VISIBLE);
+        findViewById(R.id.sign_out_button).setVisibility(View.GONE);
         loadScoreOfLeaderBoard();
         gp.setActivity(this);
         Handler handler = new Handler();
@@ -53,28 +49,20 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
             }
         }, 2000);
     }
-
     @Override
     public void onClick(View view) {
         if (view.getId() == R.id.sign_in_button) {
             beginUserInitiatedSignIn();
-        }
-        else if (view.getId() == R.id.add_score) {
-            updateScore(100);
         }
         else if (view.getId() == R.id.sign_out_button) {
             signOut();
             findViewById(R.id.sign_in_button).setVisibility(View.VISIBLE);
             findViewById(R.id.sign_out_button).setVisibility(View.GONE);
         }
-        else if (view.getId() == R.id.show_achievement){
-            startActivityForResult(Games.Achievements.getAchievementsIntent(
-                    getApiClient()), 1);
-        }
-        else if(view.getId() == R.id.show_leaderboard){
-            startActivityForResult(Games.Leaderboards.getLeaderboardIntent(
-                            getApiClient(), getString(R.string.leaderboard_id)), 2);
-        }
+    }
+
+    public void signOutfromGPS(){
+        signOut();
     }
 
     public void showAchievements(){
@@ -136,13 +124,13 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
                         if(arg0.getScore() != null){
                             LeaderboardScore c = arg0.getScore();
                             int playerScore = (int) c.getRawScore();
-                            if(playerScore >= 410 && playerScore <= 600){
+                            if(playerScore >= 310){
                                 gp.setUnlockedOutfit(3);
                             }
-                            if(playerScore >= 210 && playerScore <= 400){
+                            if(playerScore >= 210 && playerScore <= 300){
                                 gp.setUnlockedOutfit(2);
                             }
-                            if(playerScore >= 0 && playerScore <= 200){
+                            if(playerScore >= 110 && playerScore <= 200){
                                 gp.setUnlockedOutfit(1);
                             }
                         }

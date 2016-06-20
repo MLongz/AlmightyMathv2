@@ -13,6 +13,7 @@ public class Power extends GameObject{
     private Animation animation = new Animation();
     private float ta;
     private final MediaPlayer mp;
+    private int currentFrame;
 
     public Power(Context context, Bitmap res, int w, int h, int numFrames, int x, int y, int targetx, int targety) {
         width = w;
@@ -20,8 +21,8 @@ public class Power extends GameObject{
         spritesheet = res;
         super.x = x;
         super.y = y;
+        super.frames = numFrames;
         mp = MediaPlayer.create(context, R.raw.laser2);
-
         float angle = (float) Math.toDegrees(Math.atan2(targety - GamePanel.EYEY, targetx - GamePanel.EYEX));
         if(angle < 0){
             angle += 360;
@@ -49,6 +50,9 @@ public class Power extends GameObject{
 
     }
 
+    public int getCurrentFrame(){
+        return currentFrame = animation.getFrame();
+    }
     public void update(){
         animation.update();
     }

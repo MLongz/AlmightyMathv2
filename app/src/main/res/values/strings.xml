@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">AllmigthyMath</string>
+    <string name="app_name">Almigthy Math</string>
     <string name="signed_in">Signed in as</string>
     <string name="signed_out">User signed out</string>
     <string name="loading">Loading…</string>

@@ -10,6 +10,7 @@ public class Explosion extends GameObject {
     private Bitmap spritesheet;
     Animation animation = new Animation();
     private boolean exploded;
+    private int currentFrame;
 
     public Explosion(int x, int y, Bitmap res, int w, int h, int numFrames) {
         super.x = x;
@@ -43,7 +44,9 @@ public class Explosion extends GameObject {
         this.exploded = exploded;
     }
 
-
+    public int getCurrentFrame(){
+        return currentFrame = animation.getFrame();
+    }
     public void draw(Canvas canvas){
         canvas.drawBitmap(animation.getImage(), x, y, null);
     }

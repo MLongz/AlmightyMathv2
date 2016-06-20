@@ -26,19 +26,29 @@ public class MathTask extends GameObject{
     private Brain brain;
     private Rect rectAnswer;
     private List<Integer> easyNumberList;
+    private List<BitmapMonster> bitmapGroundMonsters, bitmapFlyingMonsters;
 
-    public List<Monster> fakeAnswersList;
+    public List<Monster> MathAnswersList;
+
 
 
 
     public MathTask( Context context, Bitmap res, int x, int y, int w, int h ){
-        fakeAnswersList = new ArrayList<>();
+        MathAnswersList = new ArrayList<>();
+
+        bitmapGroundMonsters = new ArrayList<>();
+        bitmapGroundMonsters.add( new BitmapMonster(BitmapFactory.decodeResource(context.getResources(), R.drawable.frog), 224, 224, 3));
+        bitmapGroundMonsters.add( new BitmapMonster(BitmapFactory.decodeResource(context.getResources(), R.drawable.skeleton), 224, 224, 4));
+
+        bitmapFlyingMonsters = new ArrayList<>();
+        bitmapFlyingMonsters.add( new BitmapMonster(BitmapFactory.decodeResource(context.getResources(), R.drawable.bat), 224, 224, 3));
+        bitmapFlyingMonsters.add( new BitmapMonster(BitmapFactory.decodeResource(context.getResources(), R.drawable.ghost), 224, 224, 3));
+
         yList = new ArrayList<>();
-        //add fixed y
         yList.add(20);
-        yList.add(270);
-        yList.add(520);
-        yList.add(770);
+        yList.add(250);
+        yList.add(500);
+        yList.add(710);
 
         easyNumberList = new ArrayList<>();
         easyNumberList.add(2);
@@ -61,14 +71,15 @@ public class MathTask extends GameObject{
     }
 
     public Rect getMathAnswerRect(){
-        return rectAnswer = fakeAnswersList.get(0).getRectangle();
+        return rectAnswer = MathAnswersList.get(0).getRectangle();
     }
+
     public void update(int y){
         brain.update();
-        for(int i  = 0; i < fakeAnswersList.size(); i++){
-         fakeAnswersList.get(i).update(y);
+        for(int i  = 0; i < MathAnswersList.size(); i++){
+            MathAnswersList.get(i).update(y);
+            MathAnswersList.get(i).setDx(+randomGenerator.nextInt(5));
         }
-
     }
 
     public void getEasyMath(){
@@ -147,10 +158,10 @@ public class MathTask extends GameObject{
             int p = randomGenerator.nextInt(yListTemp.size());
             int rndY = yListTemp.get(p);
             if(i == 0){
-                fakeAnswersList.add(new Monster(context, answer, rndY, BitmapFactory.decodeResource(context.getResources(), R.drawable.monster1), 224, 224, 2));
+                createRndMonster(rndY, answer);
                 yListTemp.remove(p);
             }else {
-                fakeAnswersList.add(new Monster(context, answer + (fakeAnswersList.size() + randomGenerator.nextInt(10)), rndY, BitmapFactory.decodeResource(context.getResources(), R.drawable.monster1), 224, 224, 2));
+                createRndMonster(rndY, answer + (MathAnswersList.size() + randomGenerator.nextInt(10)));
                 yListTemp.remove(p);
             }
 
@@ -158,10 +169,28 @@ public class MathTask extends GameObject{
 
     }
 
+    public void createRndMonster(int rndY, double answer){
+        if(rndY == 710){
+            int rndGroundMonster = randomGenerator.nextInt(bitmapGroundMonsters.size());
+            Bitmap bitmap = bitmapGroundMonsters.get(rndGroundMonster).getBitmap();
+            int w = bitmapGroundMonsters.get(rndGroundMonster).getWidth();
+            int h = bitmapGroundMonsters.get(rndGroundMonster).getHeight();
+            int f = bitmapGroundMonsters.get(rndGroundMonster).getNumFrames();
+            MathAnswersList.add(new Monster(context, answer, rndY, bitmap, w, h, f));
+        }else {
+            int rndGroundMonster = randomGenerator.nextInt(bitmapFlyingMonsters.size());
+            Bitmap bitmap = bitmapFlyingMonsters.get(rndGroundMonster).getBitmap();
+            int w = bitmapFlyingMonsters.get(rndGroundMonster).getWidth();
+            int h = bitmapFlyingMonsters.get(rndGroundMonster).getHeight();
+            int f = bitmapFlyingMonsters.get(rndGroundMonster).getNumFrames();
+            MathAnswersList.add(new Monster(context, answer, rndY, bitmap, w, h, f));
+        }
+    }
+
     public void draw(Canvas canvas){
         brain.draw(canvas);
-        for(int i  = 0; i < fakeAnswersList.size(); i++){
-            fakeAnswersList.get(i).draw(canvas);
+        for(int i  = 0; i < MathAnswersList.size(); i++){
+            MathAnswersList.get(i).draw(canvas);
         }
     }
 }

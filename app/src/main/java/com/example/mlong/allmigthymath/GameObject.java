@@ -19,6 +19,24 @@ public abstract class GameObject {
     protected int width;
     protected  int height;
     protected double answer;
+    protected int frames;
+    protected Bitmap bitmap;
+
+    public Bitmap getBitmap() {
+        return bitmap;
+    }
+
+    public void setBitmap(Bitmap bitmap) {
+        this.bitmap = bitmap;
+    }
+
+    public int getFrames() {
+        return frames;
+    }
+
+    public void setFrames(int frames) {
+        this.frames = frames;
+    }
 
     public double getAnswer() {
         return answer;
@@ -102,7 +120,7 @@ public abstract class GameObject {
         // text size in pixels
         paint.setTextSize((int) (textSize * scale));
         // text shadow
-        //paint.setShadowLayer(1f, 0f, 1f, Color.BLACK);
+        paint.setShadowLayer(1f, 0f, 1f, Color.BLACK);
 
         // draw text to the Canvas center
         Rect bounds = new Rect();

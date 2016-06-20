@@ -28,7 +28,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
     private MainThread thread;
     private Background bg;
     private StartMenu startMenu;
-    private StartMenuItems startGame, highScore, achievements, options, continuegame, tomenu;
+    private StartMenuItems startGame, highScore, achievements, options, picker, tomenu;
     private Player player, outfit1, outfit2, outfit3, outfit4;
     private MathTask mathTask;
     private PowerBar powerBar;
@@ -94,22 +94,23 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
     public void surfaceCreated(SurfaceHolder holder) {
         //create background
         bg = new Background(getContext(), BitmapFactory.decodeResource(getResources(), R.drawable.city2));
+        //create player image, width, height and how many frames
+        player = new Player(BitmapFactory.decodeResource(getResources(), R.drawable.playeroutfit4), 300, 300, 6);
         //create start menu and menu-items
         startMenu = new StartMenu(getContext());
+        picker = new StartMenuItems(getContext(),BitmapFactory.decodeResource(getResources(), R.drawable.picker), 224, 379, 1, player.getX() + 40, 640);
         startGame = new StartMenuItems(getContext(),BitmapFactory.decodeResource(getResources(), R.drawable.start2), 406, 65, 1, 750, 350);
         highScore = new StartMenuItems(getContext(),BitmapFactory.decodeResource(getResources(), R.drawable.highscore2), 406, 65, 1, 750, 460);
         achievements = new StartMenuItems(getContext(),BitmapFactory.decodeResource(getResources(), R.drawable.achievements2), 518, 62, 1, 700, 570);
         options = new StartMenuItems(getContext(),BitmapFactory.decodeResource(getResources(), R.drawable.options2), 406, 65, 1, 750, 680);
-        //create player image, width, height and how many frames
-        player = new Player(getContext(), BitmapFactory.decodeResource(getResources(), R.drawable.playeroutfit4), 300, 300, 6);
-        //create all the unlockable outfits
-        outfit1 = new Player(getContext(), BitmapFactory.decodeResource(getResources(), R.drawable.playeroutfit1), 300, 300, 6);
+       //create all the unlockable outfits
+        outfit1 = new Player(BitmapFactory.decodeResource(getResources(), R.drawable.playeroutfit1), 300, 300, 6);
         outfit1.setX(player.getX());
-        outfit2 = new Player(getContext(), BitmapFactory.decodeResource(getResources(), R.drawable.lockedoutfit1), 300, 300, 6);
+        outfit2 = new Player(BitmapFactory.decodeResource(getResources(), R.drawable.lockedoutfit1), 300, 300, 6);
         outfit2.setX(outfit1.getX() + 400);
-        outfit3 = new Player(getContext(), BitmapFactory.decodeResource(getResources(), R.drawable.lockedplateroutfit2), 300, 300, 6);
+        outfit3 = new Player(BitmapFactory.decodeResource(getResources(), R.drawable.lockedplateroutfit2), 300, 300, 6);
         outfit3.setX(outfit2.getX() + 400);
-        outfit4 = new Player(getContext(), BitmapFactory.decodeResource(getResources(), R.drawable.lockedplateroutfit2), 300, 300, 6);
+        outfit4 = new Player(BitmapFactory.decodeResource(getResources(), R.drawable.lockedplateroutfit2), 300, 300, 6);
         outfit4.setX(outfit3.getX() + 400);
         //create the powerbar
         powerBar = new PowerBar(getContext(),
@@ -155,7 +156,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
         isDead = false;
         player.setPlaying(true);
         showMenu = false;
-        mathTask.fakeAnswersList.clear();
+        mathTask.MathAnswersList.clear();
         mathTask.getEasyMath();
         bg.soundStart();
         unlockOutfits();
@@ -175,10 +176,11 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
         Rect rOption = options.getRectangle();
         Rect rDead = brainDead.getRectangle();
         Rect rToMenu = tomenu.getRectangle();
-//        explosionStartTime = System.nanoTime();
-//        explosion = new Explosion(touchX,touchY,
-//                BitmapFactory.decodeResource(getResources(), R.drawable.explosion), 336, 287, 8);
-//        explosion.setExploded(true);
+
+        Rect rOutfit1 = outfit1.getRectangle();
+        Rect rOutfit2 = outfit2.getRectangle();
+        Rect rOutfit3 = outfit3.getRectangle();
+        Rect rOutfit4 = outfit4.getRectangle();
 
         try{
             if(isDead == true){
@@ -206,25 +208,60 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
                     showMenu = true;
                 }
                 if(rOption.contains(touchX, touchY)){
-                    showMenu = true;
+                    mActivity.signOutfromGPS();
+                }
+                if(rOutfit1.contains(touchX, touchY)){
+                    picker.setX(outfit1.getX() + 40);
+                    picker.setY(640);
+                    changeOutfit(1);
+                }
+                if(rOutfit2.contains(touchX, touchY)){
+                    picker.setX(outfit2.getX() + 40);
+                    picker.setY(640);
+                    if(unlockedOutfit >= 1){
+                        changeOutfit(2);
+                    }else {
+                        picker.setX(outfit1.getX() + 40);
+                        picker.setY(640);
+                    }
+                }
+                if(rOutfit3.contains(touchX, touchY)){
+                    picker.setX(outfit3.getX() + 70);
+                    picker.setY(640);
+                    if(unlockedOutfit >= 2){
+                        changeOutfit(3);
+                    }else{
+                        picker.setX(outfit1.getX() + 40);
+                        picker.setY(640);
+                    }
+                }
+                if(rOutfit4.contains(touchX, touchY)){
+                    picker.setX(outfit4.getX() + 70);
+                    picker.setY(640);
+                    if(unlockedOutfit == 3){
+                        changeOutfit(4);
+                    }else {
+                        picker.setX(outfit1.getX() + 40);
+                        picker.setY(640);
+                    }
                 }
             }
-            if(player.isPlaying() == true){
+            if(player.isPlaying() == true && player.isAttack() == false){
                 laserStartTime = System.nanoTime();
                 laser = new Power(getContext(), BitmapFactory.decodeResource(getResources(),R.drawable.laser_red), 1725, 95, 11, EYEX, EYEY, touchX, touchY);
                 player.setAttack(true);
                 laser.soundStart();
-                for(int i = 0; i < mathTask.fakeAnswersList.size(); i ++){
-                    Rect tempr = mathTask.fakeAnswersList.get(i).getRectangle();
+                for(int i = 0; i < mathTask.MathAnswersList.size(); i ++){
+                    Rect tempr = mathTask.MathAnswersList.get(i).getRectangle();
                     if(tempr.contains(touchX, touchY) && player.isPlaying() == true){
-                        if(mathTask.getAnswer() == mathTask.fakeAnswersList.get(i).getAnswer()){
+                        if(mathTask.getAnswer() == mathTask.MathAnswersList.get(i).getAnswer()){
                             explosionStartTime = System.nanoTime();
-                            explosion = new Explosion(mathTask.fakeAnswersList.get(i).getX(), mathTask.fakeAnswersList.get(i).getY(),
+                            explosion = new Explosion(mathTask.MathAnswersList.get(i).getX(), mathTask.MathAnswersList.get(i).getY(),
                                     BitmapFactory.decodeResource(getResources(), R.drawable.explosion), 336, 287, 8);
                             explosion.setExploded(true);
                             changePowerBar();
                             player.setScore(10);
-                            mathTask.fakeAnswersList.remove(i);
+                            mathTask.MathAnswersList.remove(i);
                             monsterDisapearStartTime = System.nanoTime();
                             getNewTask = true;
                         }else{
@@ -240,17 +277,30 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
         return super.onTouchEvent(event);
     }
 
+    public void changeOutfit(int nr){
+        if(nr == 1){
+            player = new Player(BitmapFactory.decodeResource(getResources(), R.drawable.playeroutfit1), 300, 300, 6);
+        }
+        if(nr == 2){
+            player = new Player(BitmapFactory.decodeResource(getResources(), R.drawable.playeroutfit2), 300, 300, 6);
+        }
+        if(nr == 3){
+            player = new Player(BitmapFactory.decodeResource(getResources(), R.drawable.playeroutfit3), 300, 300, 6);
+        }
+        if(nr == 4){
+            player = new Player(BitmapFactory.decodeResource(getResources(), R.drawable.playeroutfit4), 300, 300, 6);
+        }
+    }
+
     public void changePowerBar(){
         if(SCORE >= 1010){
             powerBar = new PowerBar(getContext(),  BitmapFactory.decodeResource(getResources(), R.drawable.powerbar4), 300, 60, 5);
         }
         if(SCORE >= 410 && SCORE <= 600){
             powerBar = new PowerBar(getContext(),  BitmapFactory.decodeResource(getResources(), R.drawable.powerbar3), 300, 60, 5);
-            player = new Player(getContext(), BitmapFactory.decodeResource(getResources(), R.drawable.playeroutfit4), 300, 300, 6);
         }
         if(SCORE >= 210 && SCORE <= 400){
             powerBar = new PowerBar(getContext(),  BitmapFactory.decodeResource(getResources(), R.drawable.powerbar2), 300, 60, 5);
-            player = new Player(getContext(), BitmapFactory.decodeResource(getResources(), R.drawable.playeroutfit3), 300, 300, 7);
         }
         if(SCORE >= 0 && SCORE <= 200){
             powerBar = new PowerBar(getContext(),  BitmapFactory.decodeResource(getResources(), R.drawable.powerbar1), 300, 60, 5);
@@ -259,19 +309,15 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 
     public void unlockOutfits(){
         if(unlockedOutfit == 3){
-            outfit3 = new Player(getContext(), BitmapFactory.decodeResource(getResources(), R.drawable.playeroutfit3), 300, 300, 6);
-            outfit3.setX(outfit2.getX() + 400);
-            outfit4 = new Player(getContext(), BitmapFactory.decodeResource(getResources(), R.drawable.playeroutfit4), 300, 300, 6);
+            outfit4 = new Player(BitmapFactory.decodeResource(getResources(), R.drawable.playeroutfit4), 300, 300, 6);
             outfit4.setX(outfit3.getX() + 400);
         }
-        if(unlockedOutfit == 2){
-            outfit3 = new Player(getContext(), BitmapFactory.decodeResource(getResources(), R.drawable.playeroutfit3), 300, 300, 6);
+        if(unlockedOutfit >= 2){
+            outfit3 = new Player(BitmapFactory.decodeResource(getResources(), R.drawable.playeroutfit3), 300, 300, 6);
             outfit3.setX(outfit2.getX() + 400);
-            outfit2 = new Player(getContext(), BitmapFactory.decodeResource(getResources(), R.drawable.playeroutfit2), 300, 300, 6);
-            outfit2.setX(outfit1.getX() + 400);
         }
-        if(unlockedOutfit == 1){
-            outfit2 = new Player(getContext(), BitmapFactory.decodeResource(getResources(), R.drawable.playeroutfit2), 300, 300, 6);
+        if(unlockedOutfit >= 1){
+            outfit2 = new Player(BitmapFactory.decodeResource(getResources(), R.drawable.playeroutfit2), 300, 300, 6);
             outfit2.setX(outfit1.getX() + 400);
         }
     }
@@ -284,9 +330,9 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
             highScore.update();
             achievements.update();
             options.update();
-
             bg.update();
 
+            picker.update();
             outfit1.update();
             outfit2.update();
             outfit3.update();
@@ -304,7 +350,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
             if(player.isAttack() == true){
                 laser.update();
                 long elapsed = (System.nanoTime() - laserStartTime)/1000000;
-                if(elapsed > 500){
+                if(elapsed > 550){
                     player.setAttack(false);
                 }
             }
@@ -319,7 +365,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
                 mathTask.update(30);
                 long elapsed3 = (System.nanoTime() - monsterDisapearStartTime)/1000000;
                 if(elapsed3 > 1000){
-                    mathTask.fakeAnswersList.clear();
+                    mathTask.MathAnswersList.clear();
                     if(SCORE >= 1010){
                         DIFFICULTSPEED = 10;
                         //mathTask.getHardMath();
@@ -342,7 +388,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
                     getNewTask = false;
                 }
             }
-            if(mathTask.fakeAnswersList.get(0).getX() <=  0){
+            if(mathTask.MathAnswersList.get(0).getX() <=  player.getX()){
                 isDead = true;
             }
         }
@@ -382,6 +428,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
                 achievements.draw(canvas);
                 options.draw(canvas);
 
+                picker.draw(canvas);
                 outfit1.draw(canvas);
                 outfit2.draw(canvas);
                 outfit3.draw(canvas);

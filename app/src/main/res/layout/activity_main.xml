@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -7,38 +6,48 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.example.mlong.allmigthymath.MainActivity">
+    tools:context="com.example.fungame.MainActivity"
+    android:background="@drawable/loadingscreen">
 
-    <TextView
-        android:id="@+id/textgmail"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/sign_in_buttons"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
-        android:layout_alignTop="@+id/disconnect_button"
-        android:layout_alignStart="@+id/sign_in_button"
-        android:layout_alignEnd="@+id/sign_in_button" />
+        android:layout_alignParentTop="true"
+        android:orientation="horizontal">
+
+        <!-- sign-in button -->
+
+        <!-- sign-out button -->
+
+        <Button
+            android:id="@+id/sign_out_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Sign Out"
+            android:visibility="gone" />
+    </LinearLayout>
 
     <com.google.android.gms.common.SignInButton
         android:id="@+id/sign_in_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/textgmail"
+        android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="51dp" />
+        android:layout_gravity="center" />
 
-    <!-- sign-out button -->
-    <Button
-        android:id="@+id/sign_out_button"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/play_buttons"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="Sign Out"
-        android:visibility="gone"
-        android:layout_alignTop="@+id/sign_in_button"
-        android:layout_centerHorizontal="true" />
-    <Button
-        android:id="@+id/disconnect_button"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:text="Disconnect"/>
-</RelativeLayout>
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:layout_below="@id/sign_in_buttons">
+
+        <!-- show achievements -->
+
+        <!-- show leaderboards -->
+
+    </LinearLayout>
+
+</FrameLayout>

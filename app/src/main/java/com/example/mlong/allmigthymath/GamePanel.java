@@ -28,7 +28,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
     private MainThread thread;
     private Background bg;
     private StartMenu startMenu;
-    private StartMenuItems startGame, highScore, achievements, options, continuegame, tomenu, pause;
+    private StartMenuItems startGame, highScore, achievements, options, continuegame, tomenu;
     private Player player, outfit1, outfit2, outfit3, outfit4;
     private MathTask mathTask;
     private PowerBar powerBar;
@@ -44,7 +44,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
     private boolean showMenu;
     private boolean getNewTask;
     private boolean isDead;
-    private boolean isPaused;
+
+    private int unlockedOutfit;
 
     private MainActivity mActivity;
 
@@ -66,6 +67,9 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
     }
     public void setActivity(MainActivity overlayActivity) {
         mActivity = overlayActivity;
+    }
+    public void setUnlockedOutfit(int unlockedOutfit) {
+        this.unlockedOutfit = unlockedOutfit;
     }
 
     @Override
@@ -96,20 +100,16 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
         highScore = new StartMenuItems(getContext(),BitmapFactory.decodeResource(getResources(), R.drawable.highscore2), 406, 65, 1, 750, 460);
         achievements = new StartMenuItems(getContext(),BitmapFactory.decodeResource(getResources(), R.drawable.achievements2), 518, 62, 1, 700, 570);
         options = new StartMenuItems(getContext(),BitmapFactory.decodeResource(getResources(), R.drawable.options2), 406, 65, 1, 750, 680);
-        //create pause options
-        pause = new StartMenuItems(getContext(),BitmapFactory.decodeResource(getResources(), R.drawable.pause), 91, 87, 1, 1800, 20);
-        continuegame = new StartMenuItems(getContext(),BitmapFactory.decodeResource(getResources(), R.drawable.btncontinue), 518, 62, 1, 700, 460);
-        tomenu = new StartMenuItems(getContext(),BitmapFactory.decodeResource(getResources(), R.drawable.menu), 518, 62, 1, 700, 570);
         //create player image, width, height and how many frames
         player = new Player(getContext(), BitmapFactory.decodeResource(getResources(), R.drawable.playeroutfit4), 300, 300, 6);
         //create all the unlockable outfits
         outfit1 = new Player(getContext(), BitmapFactory.decodeResource(getResources(), R.drawable.playeroutfit1), 300, 300, 6);
         outfit1.setX(player.getX());
-        outfit2 = new Player(getContext(), BitmapFactory.decodeResource(getResources(), R.drawable.playeroutfit2), 300, 300, 6);
+        outfit2 = new Player(getContext(), BitmapFactory.decodeResource(getResources(), R.drawable.lockedoutfit1), 300, 300, 6);
         outfit2.setX(outfit1.getX() + 400);
-        outfit3 = new Player(getContext(), BitmapFactory.decodeResource(getResources(), R.drawable.playeroutfit3), 300, 300, 6);
+        outfit3 = new Player(getContext(), BitmapFactory.decodeResource(getResources(), R.drawable.lockedplateroutfit2), 300, 300, 6);
         outfit3.setX(outfit2.getX() + 400);
-        outfit4 = new Player(getContext(), BitmapFactory.decodeResource(getResources(), R.drawable.playeroutfit4), 300, 300, 6);
+        outfit4 = new Player(getContext(), BitmapFactory.decodeResource(getResources(), R.drawable.lockedplateroutfit2), 300, 300, 6);
         outfit4.setX(outfit3.getX() + 400);
         //create the powerbar
         powerBar = new PowerBar(getContext(),
@@ -119,6 +119,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
                 BitmapFactory.decodeResource(getResources(), R.drawable.taskbubble), player.getX() + 100, player.getY() - 150, 200, 200);
         //create the braindead screen
         brainDead = new BrainDead(getContext());
+        tomenu = new StartMenuItems(getContext(),BitmapFactory.decodeResource(getResources(), R.drawable.menu), 518, 62, 1, 720, 770);
+
         //get the player eyes xy
         EYEX = player.getX() + 240;
         EYEY = player.getY() + 20;
@@ -140,15 +142,23 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
         showMenu = true;
         getNewTask = false;
         isDead = false;
-        isPaused = false;
-
+        unlockOutfits();
         //we can safely create the game loop
         thread.setRunning(true);
         thread.start();
     }
 
-    public void setPaused(boolean p){
-        isPaused = p;
+    public void newGame(){
+        player.resetScore();
+        SCORE = player.getScore();
+        DIFFICULTSPEED = 5;
+        isDead = false;
+        player.setPlaying(true);
+        showMenu = false;
+        mathTask.fakeAnswersList.clear();
+        mathTask.getEasyMath();
+        bg.soundStart();
+        unlockOutfits();
     }
 
 
@@ -164,49 +174,28 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
         Rect rAchiements = achievements.getRectangle();
         Rect rOption = options.getRectangle();
         Rect rDead = brainDead.getRectangle();
-        Rect rContinue = continuegame.getRectangle();
         Rect rToMenu = tomenu.getRectangle();
-        Rect rPause = pause.getRectangle();
 //        explosionStartTime = System.nanoTime();
 //        explosion = new Explosion(touchX,touchY,
 //                BitmapFactory.decodeResource(getResources(), R.drawable.explosion), 336, 287, 8);
 //        explosion.setExploded(true);
 
         try{
-            if(isPaused == false){
-                if(rPause.contains(touchX, touchY)){
-                    isPaused = true;
-                }
-            }
-            if(isPaused == true){
-                if(rContinue.contains(touchX, touchY)){
-                    player.setPlaying(true);
-                    isPaused = false;
+            if(isDead == true){
+                if(rDead.contains(touchX, touchY)){
+                    newGame();
                 }
                 if(rToMenu.contains(touchX, touchY)){
                     player.setPlaying(false);
-                    showMenu = true;
-                    isPaused = false;
-                }
-
-            }
-            if(isDead == true){
-                if(rDead.contains(touchX, touchY)){
-                    player.resetScore();
-                    SCORE = player.getScore();
-                    DIFFICULTSPEED = 5;
                     isDead = false;
-                    player.setPlaying(true);
-                    showMenu = false;
-                    mathTask.fakeAnswersList.clear();
-                    mathTask.getEasyMath();
-                    bg.soundStart();
+                    showMenu = true;
                 }
             }
             if(showMenu == true){
                 if(rStartGame.contains(touchX, touchY)){
                     player.setPlaying(true);
                     showMenu = false;
+                    newGame();
                 }
                 if(rHighScore.contains(touchX, touchY)){
                     mActivity.showLeaderboard();
@@ -240,8 +229,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
                             getNewTask = true;
                         }else{
                             mActivity.updateScore(player.getScore());
-                            player.setPlaying(false);
                             isDead = true;
+                            player.setPlaying(false);
                         }
                     }
                 }
@@ -268,14 +257,28 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
         }
     }
 
+    public void unlockOutfits(){
+        if(unlockedOutfit == 3){
+            outfit3 = new Player(getContext(), BitmapFactory.decodeResource(getResources(), R.drawable.playeroutfit3), 300, 300, 6);
+            outfit3.setX(outfit2.getX() + 400);
+            outfit4 = new Player(getContext(), BitmapFactory.decodeResource(getResources(), R.drawable.playeroutfit4), 300, 300, 6);
+            outfit4.setX(outfit3.getX() + 400);
+        }
+        if(unlockedOutfit == 2){
+            outfit3 = new Player(getContext(), BitmapFactory.decodeResource(getResources(), R.drawable.playeroutfit3), 300, 300, 6);
+            outfit3.setX(outfit2.getX() + 400);
+            outfit2 = new Player(getContext(), BitmapFactory.decodeResource(getResources(), R.drawable.playeroutfit2), 300, 300, 6);
+            outfit2.setX(outfit1.getX() + 400);
+        }
+        if(unlockedOutfit == 1){
+            outfit2 = new Player(getContext(), BitmapFactory.decodeResource(getResources(), R.drawable.playeroutfit2), 300, 300, 6);
+            outfit2.setX(outfit1.getX() + 400);
+        }
+    }
+
     public void update() {
         SCORE = player.getScore();
-        if(isPaused == true){
-            continuegame.update();
-            tomenu.update();
-            player.setPlaying(false);
-        }
-        if(showMenu == true && player.isPlaying() == false){
+        if(showMenu == true || player.isPlaying() == false){
             startMenu.update();
             startGame.update();
             highScore.update();
@@ -291,13 +294,13 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
         }
         if(isDead == true){
             player.setPlaying(false);
+            tomenu.update();
         }
         if(player.isPlaying()){
             bg.update();
             player.update();
             powerBar.update();
             mathTask.update(0);
-            pause.update();
             if(player.isAttack() == true){
                 laser.update();
                 long elapsed = (System.nanoTime() - laserStartTime)/1000000;
@@ -319,15 +322,18 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
                     mathTask.fakeAnswersList.clear();
                     if(SCORE >= 1010){
                         DIFFICULTSPEED = 10;
-                        mathTask.getHardMath();
+                        //mathTask.getHardMath();
+                        mathTask.getEasyMath();
                     }
                     if(SCORE >= 510 && SCORE <= 1000){
-                        DIFFICULTSPEED = 10;
-                        mathTask.getHardMath();
+                        DIFFICULTSPEED = 7;
+                        //mathTask.getHardMath();
+                        mathTask.getEasyMath();
                     }
                     if(SCORE >= 110 && SCORE <= 500){
                         DIFFICULTSPEED = 5;
-                        mathTask.getMediumMath();
+                        //mathTask.getMediumMath();
+                        mathTask.getEasyMath();
                     }
                     if(SCORE >= 0 && SCORE <= 100){
                         DIFFICULTSPEED = 5;
@@ -352,14 +358,14 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
             final int savedState = canvas.save();
             canvas.scale(scaleFactorX, scaleFactorY);
             bg.draw(canvas);
-            pause.draw(canvas);
-            if(player.isPlaying() == true || isPaused == true){
+
+            if(player.isPlaying() == true){
                 mathTask.draw(canvas);
                 powerBar.draw(canvas);
                 score.draw(canvas);
                 player.draw(canvas);
             }
-            if(player.isPlaying() == false && showMenu == false && isPaused == false){
+            if(player.isPlaying() == false && showMenu == false){
                 outfit1.draw(canvas);
                 outfit2.draw(canvas);
                 outfit3.draw(canvas);
@@ -367,6 +373,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
             }
             if(isDead == true && player.isPlaying() == false){
                 brainDead.draw(canvas);
+                tomenu.draw(canvas);
             }
             if(showMenu == true){
                 startMenu.draw(canvas);
@@ -385,10 +392,6 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
             }
             if(explosion.isExploded() == true){
                 explosion.draw(canvas);
-            }
-            if(isPaused == true && showMenu == false){
-                continuegame.draw(canvas);
-                tomenu.draw(canvas);
             }
             canvas.restoreToCount(savedState);
         }

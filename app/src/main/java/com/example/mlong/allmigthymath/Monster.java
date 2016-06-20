@@ -48,6 +48,7 @@ public class Monster extends GameObject {
 
     public void update(int y){
         x -= dx;
+        x += y;
         super.y -= y;
         animation.update();
         if(x < -GamePanel.WIDTH){

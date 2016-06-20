@@ -1,14 +1,21 @@
 package com.example.mlong.allmigthymath;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.widget.Toast;
 
+import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.games.Games;
+import com.google.android.gms.games.leaderboard.LeaderboardScore;
+import com.google.android.gms.games.leaderboard.LeaderboardVariant;
+import com.google.android.gms.games.leaderboard.Leaderboards;
 import com.google.example.games.basegameutils.BaseGameActivity;
+import com.google.example.games.basegameutils.GameHelper;
 
 public class MainActivity extends BaseGameActivity implements View.OnClickListener {
     GamePanel gp;
+    GameHelper gameHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -19,15 +26,10 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
         findViewById(R.id.add_score).setOnClickListener(this);
         findViewById(R.id.show_leaderboard).setOnClickListener(this);
         findViewById(R.id.show_achievement).setOnClickListener(this);
-//
-//        //turn of tittle
-//        requestWindowFeature(Window.FEATURE_NO_TITLE);
-//        //sett fullscreen
-//
-//        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-//        //setContentView(new GamePanel(this));
-//        Intent intent = new Intent(this, SignInActivity.class);
-//        startActivity(intent);
+
+        gp = new GamePanel(this);
+        gameHelper = new GameHelper(this, GameHelper.CLIENT_GAMES);
+        gameHelper.setup(this);
     }
 
     @Override
@@ -40,9 +42,16 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
     public void onSignInSucceeded() {
         findViewById(R.id.sign_in_button).setVisibility(View.GONE);
         findViewById(R.id.sign_out_button).setVisibility(View.VISIBLE);
-        gp = new GamePanel(this);
-              setContentView(gp);
-              gp.setActivity(this);
+        loadScoreOfLeaderBoard();
+        gp.setActivity(this);
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                setContentView(gp);
+                Games.Achievements.unlock(getApiClient(), getString(R.string.achievement_baby));
+            }
+        }, 2000);
     }
 
     @Override
@@ -90,8 +99,22 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
 
     public void updateScore(int score){
         if(getApiClient().isConnected()){
+            if(score >= 500){
+                Games.Achievements.unlock(getApiClient(), getString(R.string.achievement_almighty));
+            }
+            if(score >= 310 && score <= 400){
+                Games.Achievements.unlock(getApiClient(), getString(R.string.achievement_super_iq));
+            }
+            if(score >= 210 && score <= 300){
+                Games.Achievements.unlock(getApiClient(), getString(R.string.achievement_smartass));
+            }
+            if(score >= 110 && score <= 200){
+                Games.Achievements.unlock(getApiClient(), getString(R.string.achievement_casual_player));
+            }
+            if(score >= 0 && score <= 100){
+                Games.Achievements.unlock(getApiClient(), getString(R.string.achievement_noob));
+            }
             Games.Leaderboards.submitScore(getApiClient(), getString(R.string.leaderboard_id), score);
-            Games.Achievements.unlock(getApiClient(), getString(R.string.achievement_noob));
         }else {
             Toast.makeText(this,"Not logged in",
                     Toast.LENGTH_LONG).show();
@@ -100,6 +123,31 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
 
     @Override
     public void onBackPressed() {
-        gp.setPaused(true);
     }
+
+    public void loadScoreOfLeaderBoard() {
+        Games.Leaderboards.loadCurrentPlayerLeaderboardScore(getApiClient(),
+                getString(R.string.leaderboard_id),
+                LeaderboardVariant.TIME_SPAN_ALL_TIME,
+                LeaderboardVariant.COLLECTION_SOCIAL).setResultCallback(
+                new ResultCallback<Leaderboards.LoadPlayerScoreResult>() {
+                    @Override
+                    public void onResult(Leaderboards.LoadPlayerScoreResult arg0) {
+                        if(arg0.getScore() != null){
+                            LeaderboardScore c = arg0.getScore();
+                            int playerScore = (int) c.getRawScore();
+                            if(playerScore >= 410 && playerScore <= 600){
+                                gp.setUnlockedOutfit(3);
+                            }
+                            if(playerScore >= 210 && playerScore <= 400){
+                                gp.setUnlockedOutfit(2);
+                            }
+                            if(playerScore >= 0 && playerScore <= 200){
+                                gp.setUnlockedOutfit(1);
+                            }
+                        }
+                    }
+                });
+    }
+
 }

@@ -14,7 +14,7 @@ public class BrainDead extends GameObject {
     private Context context;
 
     public BrainDead(Context context) {
-        super.x =  126;
+        super.x =  128;
         super.y = 120;
         height = 513;
         width = 1654;

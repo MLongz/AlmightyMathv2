@@ -15,16 +15,17 @@ public class Background {
     private int x, y, dx;
     private final MediaPlayer mp;
 
-    public Background(Context context, Bitmap res){
-        image = Bitmap.createScaledBitmap(res, GamePanel.WIDTH, GamePanel.HEIGTH, true);
+
+    public Background(Context context, Bitmap bitmap){
         dx = GamePanel.MOVESPEED;
         mp = MediaPlayer.create(context, R.raw.canvai_sunset);
+        image = bitmap;
     }
 
     public void update(){
         soundStart();
         x += dx;
-        if(x < -GamePanel.WIDTH){
+        if(x < -12288){
             x = 0;
         }
     }
@@ -45,7 +46,7 @@ public class Background {
         canvas.drawBitmap(image, x, y, null);
         //draw a new image after the original one so it looks like a loop
         if(x < 0){
-            canvas.drawBitmap(image, x + GamePanel.WIDTH, y, null);
+            canvas.drawBitmap(image, x + 12288, y, null);
         }
     }
 

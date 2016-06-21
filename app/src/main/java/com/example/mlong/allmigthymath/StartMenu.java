@@ -48,6 +48,7 @@ public class StartMenu extends GameObject {
 
     public void update() {
         animation.update();
+
     }
 
 

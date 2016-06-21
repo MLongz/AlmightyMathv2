@@ -52,7 +52,7 @@ public class BrainDead extends GameObject {
 
 
     public void draw(Canvas canvas){
-        canvas.drawBitmap(drawTextToBitmap(context, animation.getImage(), String.valueOf(GamePanel.SCORE), 225, 225, 225, 50, 1, 40), x, y, null);
+        canvas.drawBitmap(drawTextToBitmap(context, animation.getImage(), String.valueOf(GamePanel.SCORE), 225, 225, 225, 80, 0, 40), x, y, null);
     }
 
 

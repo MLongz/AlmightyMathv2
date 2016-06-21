@@ -9,45 +9,5 @@
     tools:context="com.example.fungame.MainActivity"
     android:background="@drawable/loadingscreen">
 
-    <LinearLayout
-        android:id="@+id/sign_in_buttons"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:orientation="horizontal">
-
-        <!-- sign-in button -->
-
-        <!-- sign-out button -->
-
-        <Button
-            android:id="@+id/sign_out_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Sign Out"
-            android:visibility="gone" />
-    </LinearLayout>
-
-    <com.google.android.gms.common.SignInButton
-        android:id="@+id/sign_in_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true"
-        android:layout_gravity="center" />
-
-    <LinearLayout
-        android:id="@+id/play_buttons"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:orientation="horizontal"
-        android:layout_below="@id/sign_in_buttons">
-
-        <!-- show achievements -->
-
-        <!-- show leaderboards -->
-
-    </LinearLayout>
 
 </FrameLayout>

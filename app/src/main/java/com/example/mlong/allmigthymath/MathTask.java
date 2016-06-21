@@ -103,6 +103,27 @@ public class MathTask extends GameObject{
         }
     }
 
+    public void getEasyMath2(){
+        this.mathX = randomGenerator.nextInt(50) + 1;
+        this.mathY = randomGenerator.nextInt(10) + 1;
+        int rndTask = randomGenerator.nextInt(3) + 1;
+        if(rndTask == 3){
+            this.mathX = easyNumberList.get(randomGenerator.nextInt(easyNumberList.size()));
+            this.mathY = 2;
+            createMathtask(mathX * 10, mathY * 10, rndTask, 2);
+            int intx = (int) mathX;
+            int inty = (int) mathY;
+            string = intx + " " + this.mathSymbol + " " + inty;
+            brain = new Brain(context, string, BitmapFactory.decodeResource(context.getResources(), R.drawable.brain3), x - 50, y - 130, 350, 350, 2);
+        }else {
+            createMathtask(mathX, mathY, rndTask, 2);
+            int intx = (int) mathX;
+            int inty = (int) mathY;
+            string = intx + " " + this.mathSymbol + " " + inty;
+            brain = new Brain(context, string, BitmapFactory.decodeResource(context.getResources(), R.drawable.brain3), x - 50, y - 130, 350, 350, 2);
+        }
+    }
+
     public void getMediumMath(){
         this.mathX = randomGenerator.nextInt(100) + 1;
         this.mathY = randomGenerator.nextInt(10) + 1;

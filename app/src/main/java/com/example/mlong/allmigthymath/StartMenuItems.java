@@ -38,6 +38,7 @@ public class StartMenuItems extends GameObject {
 
     public void update() {
         animation.update();
+        y -= dy;
     }
 
 

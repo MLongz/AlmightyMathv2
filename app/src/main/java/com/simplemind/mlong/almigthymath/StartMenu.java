@@ -1,27 +1,26 @@
-package com.example.mlong.allmigthymath;
+package com.simplemind.mlong.almigthymath;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 
 /**
  * Created by Long Huynh on 18.06.2016.
  */
-public class StartMenuItems extends GameObject {
+public class StartMenu extends GameObject {
     private Bitmap spritesheet;
     Animation animation = new Animation();
-    private int numFrames;
     private Context context;
 
-    public StartMenuItems(Context context, Bitmap bitmap, int width, int height, int numFrames, int x, int y) {
-        super.x = x;
-        super.y = y;
-        super.height = height;
-        super.width = width;
-        spritesheet = bitmap;
+    public StartMenu(Context context) {
+        super.x = 430;
+        super.y = 30;
+        height = 299;
+        width = 1036;
+        spritesheet = BitmapFactory.decodeResource(context.getResources(), R.drawable.title);
         spritesheet = Bitmap.createScaledBitmap(spritesheet, width, height, true);
         this.context = context;
-        this.numFrames = numFrames;
 
 
         //animation frames for the player image
@@ -36,9 +35,20 @@ public class StartMenuItems extends GameObject {
         animation.setDelay(100);
     }
 
+
+    @Override
+    public int getX() {
+        return x;
+    }
+
+    @Override
+    public void setX(int x) {
+        this.x = x;
+    }
+
     public void update() {
         animation.update();
-        y -= dy;
+
     }
 
 
@@ -46,3 +56,4 @@ public class StartMenuItems extends GameObject {
         canvas.drawBitmap(animation.getImage(), x, y, null);
     }
 }
+

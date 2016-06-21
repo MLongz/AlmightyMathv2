@@ -42,6 +42,45 @@
           "status": 1
         }
       }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:966385080484:android:5d5b6db3912edf71",
+        "android_client_info": {
+          "package_name": "com.simplemind.mlong.almigthymath"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "966385080484-b0177jk8blf89gr8o7287e98l46hlgtb.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.simplemind.mlong.almigthymath",
+            "certificate_hash": "5DFBD6C7932CC0B214FA9F92640DB004E76BF41B"
+          }
+        },
+        {
+          "client_id": "966385080484-mcejec30ovr06asuv6ibbrjh5uq6j1b7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCJTnJEq1QjjyvXxttkC67b5kSwY9SioTs"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
     }
   ],
   "configuration_version": "1"

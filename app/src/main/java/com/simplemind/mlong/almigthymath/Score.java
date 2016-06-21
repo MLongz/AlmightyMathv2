@@ -1,28 +1,29 @@
-package com.example.mlong.allmigthymath;
+package com.simplemind.mlong.almigthymath;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 
 /**
- * Created by M. Long on 08.06.2016.
+ * Created by M. Long on 12.06.2016.
  */
-public class PowerBar extends GameObject {
+public class Score extends GameObject {
     private Bitmap spritesheet;
     Animation animation = new Animation();
     private Context context;
 
-    public PowerBar(Context context, Bitmap res, int w, int h, int numFrames) {
-        width = w;
-        height = h;
-        x = 10;
-        y = 10;
-        spritesheet = res;
+    public Score(Context context) {
+        width = 300;
+        height = 90;
+        super.x = GamePanel.powerBarX + 5;
+        super.y = 90;
+        spritesheet =  BitmapFactory.decodeResource(context.getResources(), R.drawable.score);
         this.context = context;
 
 
         //animation frames for the player image
-        Bitmap[] image = new Bitmap[numFrames];
+        Bitmap[] image = new Bitmap[1];
 
 
         for (int i = 0; i < image.length; i++) {
@@ -34,23 +35,13 @@ public class PowerBar extends GameObject {
     }
 
 
-    @Override
-    public int getX() {
-        return x;
-    }
-
-    @Override
-    public void setX(int x) {
-        this.x = x;
-    }
-
     public void update(){
         animation.update();
     }
 
 
     public void draw(Canvas canvas){
-        canvas.drawBitmap(drawTextToBitmap(context, animation.getImage(), String.valueOf(""), 61, 61, 61, 0, 0, 20), x, y, null);
+        canvas.drawBitmap(drawTextToBitmap(context, animation.getImage(), String.valueOf(": " + GamePanel.SCORE), 255, 255, 255, 30, 0, 20), x, y, null);
     }
 
 

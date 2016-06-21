@@ -1,4 +1,4 @@
-package com.example.mlong.allmigthymath;
+package com.simplemind.mlong.almigthymath;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;

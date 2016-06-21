@@ -1,30 +1,28 @@
-package com.example.mlong.allmigthymath;
+package com.simplemind.mlong.almigthymath;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 
 /**
- * Created by M. Long on 11.06.2016.
+ * Created by M. Long on 08.06.2016.
  */
-public class BrainDead extends GameObject {
+public class PowerBar extends GameObject {
     private Bitmap spritesheet;
     Animation animation = new Animation();
     private Context context;
 
-    public BrainDead(Context context) {
-        super.x =  130;
-        super.y = 120;
-        height = 513;
-        width = 1654;
-        spritesheet = BitmapFactory.decodeResource(context.getResources(), R.drawable.gameover);
-        spritesheet = Bitmap.createScaledBitmap(spritesheet, width, height, true);
+    public PowerBar(Context context, Bitmap res, int w, int h, int numFrames) {
+        width = w;
+        height = h;
+        x = 10;
+        y = 10;
+        spritesheet = res;
         this.context = context;
 
 
         //animation frames for the player image
-        Bitmap[] image = new Bitmap[1];
+        Bitmap[] image = new Bitmap[numFrames];
 
 
         for (int i = 0; i < image.length; i++) {
@@ -52,7 +50,7 @@ public class BrainDead extends GameObject {
 
 
     public void draw(Canvas canvas){
-        canvas.drawBitmap(drawTextToBitmap(context, animation.getImage(), String.valueOf(GamePanel.SCORE), 225, 225, 225, 80, 0, 40), x, y, null);
+        canvas.drawBitmap(drawTextToBitmap(context, animation.getImage(), String.valueOf(""), 61, 61, 61, 0, 0, 20), x, y, null);
     }
 
 

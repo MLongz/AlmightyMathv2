@@ -3,13 +3,12 @@
 <resources>
     <string name="app_id">966385080484</string>
     <string name="leaderboard_id">CgkIpLGoiJAcEAIQAA </string>
-
-    <string name="package_name">com.example.mlong.allmigthymath</string>
-    <string name="achievement_baby">CgkIpLGoiJAcEAIQBw</string>
+    <string name="package_name">com.simplemind.mlong.almigthymath</string>
     <string name="achievement_noob">CgkIpLGoiJAcEAIQAg</string>
     <string name="achievement_casual_player">CgkIpLGoiJAcEAIQAw</string>
     <string name="achievement_smartass">CgkIpLGoiJAcEAIQBA</string>
     <string name="achievement_super_iq">CgkIpLGoiJAcEAIQBQ</string>
     <string name="achievement_almighty">CgkIpLGoiJAcEAIQBg</string>
+    <string name="achievement_baby">CgkIpLGoiJAcEAIQBw</string>
     <string name="leaderboard_highest_iq">CgkIpLGoiJAcEAIQAA</string>
 </resources>

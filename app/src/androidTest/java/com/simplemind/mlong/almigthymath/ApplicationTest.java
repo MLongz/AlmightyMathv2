@@ -1,4 +1,4 @@
-package com.example.mlong.allmigthymath;
+package com.simplemind.mlong.almigthymath;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

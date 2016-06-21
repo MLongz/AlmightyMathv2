@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.mlong.allmigthymath">
+    package="com.simplemind.mlong.almigthymath">
 
     <application
         android:allowBackup="true"
@@ -16,7 +16,7 @@
 
         <activity
             android:screenOrientation="landscape"
-            android:name=".MainActivity"
+            android:name="com.simplemind.mlong.almigthymath.MainActivity"
             android:theme="@android:style/Theme.Holo.Light.NoActionBar.Fullscreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

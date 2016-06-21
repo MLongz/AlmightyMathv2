@@ -1,6 +1,5 @@
-package com.example.mlong.allmigthymath;
+package com.simplemind.mlong.almigthymath;
 
-import android.app.Activity;
 import android.graphics.Canvas;
 import android.view.SurfaceHolder;
 

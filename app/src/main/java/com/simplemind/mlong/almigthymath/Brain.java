@@ -1,32 +1,30 @@
-package com.example.mlong.allmigthymath;
+package com.simplemind.mlong.almigthymath;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 
 /**
- * Created by Long Huynh on 18.06.2016.
+ * Created by M. Long on 10.06.2016.
  */
-public class StartMenu extends GameObject {
+public class Brain extends GameObject {
     private Bitmap spritesheet;
     Animation animation = new Animation();
     private Context context;
+    private String string;
 
-    public StartMenu(Context context) {
-        super.x = 430;
-        super.y = 30;
-        height = 299;
-        width = 1036;
-        spritesheet = BitmapFactory.decodeResource(context.getResources(), R.drawable.title);
-        spritesheet = Bitmap.createScaledBitmap(spritesheet, width, height, true);
+    public Brain(Context context, String string, Bitmap res, int x, int y, int w, int h, int numFrames) {
+        this.string = string;
+        super.x = x;
+        super.y = y;
+        width = w;
+        height = h;
         this.context = context;
+        spritesheet = res;
 
 
         //animation frames for the player image
-        Bitmap[] image = new Bitmap[1];
-
-
+        Bitmap[] image = new Bitmap[numFrames];
         for (int i = 0; i < image.length; i++) {
             image[i] = Bitmap.createBitmap(spritesheet, i * width, 0, width, height);
         }
@@ -46,14 +44,14 @@ public class StartMenu extends GameObject {
         this.x = x;
     }
 
-    public void update() {
+    public void update(){
         animation.update();
-
     }
 
 
-    public void draw(Canvas canvas) {
-        canvas.drawBitmap(animation.getImage(), x, y, null);
+    public void draw(Canvas canvas){
+        canvas.drawBitmap(drawTextToBitmap(context, animation.getImage(), string, 255, 255, 255, 0, 0, 20), x, y, null);
     }
+
+
 }
-

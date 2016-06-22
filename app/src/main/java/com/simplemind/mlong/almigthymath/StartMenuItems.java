@@ -41,6 +41,9 @@ public class StartMenuItems extends GameObject {
         y -= dy;
     }
 
+    public void drawWithTxt(Canvas canvas, String s){
+        canvas.drawBitmap(drawTextToBitmap(context, animation.getImage(), s, 225, 225, 225, 80, 0, 40), x, y, null);
+    }
 
     public void draw(Canvas canvas) {
         canvas.drawBitmap(animation.getImage(), x, y, null);

@@ -33,7 +33,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
     private MainThread thread;
     private Background bg;
     private StartMenu startMenu;
-    private StartMenuItems startGame, highScore, achievements, credit, creditScreen, picker, tomenu, gpslogin;
+    private StartMenuItems startGame, highScore, achievements, credit, creditScreen, picker, tomenu, gpslogin, currentIQ;
     private Player player, outfit1, outfit2, outfit3, outfit4;
     private MathTask mathTask;
     private PowerBar powerBar;
@@ -50,6 +50,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
     private boolean getNewTask;
     private boolean isDead;
     private boolean rollCreditds;
+    private boolean showlocalScore;
 
     private int unlockedOutfit;
 
@@ -117,6 +118,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
         creditScreen = new StartMenuItems(getContext(),BitmapFactory.decodeResource(getResources(), R.drawable.creditsscreen), 1000, 568, 1, 1080, HEIGTH);
         creditScreen.setDy(5);
         gpslogin = new StartMenuItems(getContext(),BitmapFactory.decodeResource(getResources(), R.drawable.googleplus), 518, 100, 1, 980, 610);
+        currentIQ = new StartMenuItems(getContext(),BitmapFactory.decodeResource(getResources(), R.drawable.currentiq), 1654, 513, 1, 130, 350);
        //create all the unlockable outfits
         outfit1 = new Player(BitmapFactory.decodeResource(getResources(), R.drawable.playeroutfit1), 300, 300, 6);
         outfit1.setX(player.getX());
@@ -160,6 +162,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
         unlockOutfits();
         rollCreditds = false;
         mActivity.setFirstTime(false);
+        showlocalScore = false;
         //we can safely create the game loop
         thread.setRunning(true);
         thread.start();
@@ -192,6 +195,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
         Rect rDead = brainDead.getRectangle();
         Rect rToMenu = tomenu.getRectangle();
         Rect rGpsPlus = gpslogin.getRectangle();
+        Rect rCurrentIQ = currentIQ.getRectangle();
 
         Rect rOutfit1 = outfit1.getRectangle();
         Rect rOutfit2 = outfit2.getRectangle();
@@ -199,6 +203,10 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
         Rect rOutfit4 = outfit4.getRectangle();
 
         try{
+            if(rCurrentIQ.contains(touchX, touchY) && showlocalScore == true){
+                showlocalScore = false;
+                showMenu = true;
+            }
             if(isDead == true){
                 if(rDead.contains(touchX, touchY)){
                     newGame();
@@ -207,21 +215,31 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
                     player.setPlaying(false);
                     isDead = false;
                     showMenu = true;
+                    unlockOutfits();
                 }
             }
             if(showMenu == true){
                 if(rStartGame.contains(touchX, touchY)){
                     boolean inn = mActivity.isSignedIn();
                     if(inn == false){
-                        Toast.makeText(getContext(), "Not logged in, logg in to save score", Toast.LENGTH_LONG).show();
+                        //Toast.makeText(getContext(), "Not logged in, logg in to save score", Toast.LENGTH_LONG).show();
                     }
                     player.setPlaying(true);
                     showMenu = false;
                     newGame();
                 }
                 if(rHighScore.contains(touchX, touchY)){
-                    mActivity.showLeaderboard();
-                    showMenu = true;
+                    if(mActivity.isSignedIn()){
+                        player.setPlaying(true);
+                        showMenu = false;
+                        newGame();
+                        mActivity.showLeaderboard();
+                        showMenu = true;
+                    }else {
+                        showlocalScore = true;
+                        showMenu = false;
+                    }
+
                 }
                 if(rAchiements.contains(touchX, touchY)){
                     mActivity.showAchievements();
@@ -288,7 +306,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
                                     BitmapFactory.decodeResource(getResources(), R.drawable.explosion), 336, 287, 8);
                             explosion.setExploded(true);
                             changePowerBar();
-                            player.setScore(10);
+                            player.setScore(500);
                             mathTask.MathAnswersList.remove(i);
                             monsterDisapearStartTime = System.nanoTime();
                             getNewTask = true;
@@ -428,7 +446,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
                     getNewTask = false;
                 }
             }
-            if(mathTask.MathAnswersList.get(0).getX() ==  player.getX()){
+            if(mathTask.MathAnswersList.get(0).getX() < player.getX()){
                 isDead = true;
             }
         }
@@ -451,7 +469,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
                 score.draw(canvas);
                 player.draw(canvas);
             }
-            if(player.isPlaying() == false && showMenu == false){
+            if(player.isPlaying() == false && showMenu == false && showlocalScore == false){
                 outfit1.draw(canvas);
                 outfit2.draw(canvas);
                 outfit3.draw(canvas);
@@ -461,13 +479,19 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
                 brainDead.draw(canvas);
                 tomenu.draw(canvas);
             }
-            if(showMenu == true){
+            if(showlocalScore == true && player.isPlaying() == false){
+                startMenu.draw(canvas);
+                String s = String.valueOf(mActivity.getLocalscore());
+                currentIQ.drawWithTxt(canvas, s);
+            }
+            if (showMenu == true && showlocalScore == false){
                 startMenu.draw(canvas);
                 startGame.draw(canvas);
                 highScore.draw(canvas);
                 achievements.draw(canvas);
                 credit.draw(canvas);
                 gpslogin.draw(canvas);
+
 
                 picker.draw(canvas);
                 outfit1.draw(canvas);

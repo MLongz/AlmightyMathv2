@@ -1,5 +1,6 @@
 package com.simplemind.mlong.almigthymath;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.widget.Toast;
@@ -12,10 +13,15 @@ import com.google.android.gms.games.leaderboard.Leaderboards;
 import com.google.example.games.basegameutils.BaseGameActivity;
 import com.google.example.games.basegameutils.GameHelper;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStreamReader;
+
 public class MainActivity extends BaseGameActivity{
     private GamePanel gp;
     private GameHelper gameHelper;
     private boolean firstTime;
+    private int localscore;
 
 
     @Override
@@ -26,10 +32,61 @@ public class MainActivity extends BaseGameActivity{
         gameHelper = new GameHelper(this, GameHelper.CLIENT_GAMES);
         gameHelper.setup(this);
         firstTime = true;
+        readFile();
     }
 
     @Override
     public void onSignInFailed() {
+        gp.setActivity(this);
+        setContentView(gp);
+        localUnlockOutfit();
+    }
+
+    public void localUnlockOutfit(){
+        if(localscore >= 310){
+            gp.setUnlockedOutfit(3);
+        }
+        if(localscore >= 210 && localscore <= 300){
+            gp.setUnlockedOutfit(2);
+        }
+        if(localscore >= 110 && localscore <= 200){
+            gp.setUnlockedOutfit(1);
+        }
+    }
+    public void saveFile(int s){
+        String filename = "score.txt";
+        String sScore = String.valueOf(s);
+        FileOutputStream outputStream;
+
+        try {
+            outputStream = openFileOutput(filename, this.MODE_PRIVATE);
+            outputStream.write(sScore.getBytes());
+            outputStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void readFile(){
+        try {
+            FileInputStream fileIn=openFileInput("score.txt");
+            InputStreamReader InputRead= new InputStreamReader(fileIn);
+
+            char[] inputBuffer= new char[100];
+            String s="";
+            int charRead;
+
+            while ((charRead=InputRead.read(inputBuffer))>0) {
+                // char to string conversion
+                String readstring=String.copyValueOf(inputBuffer,0,charRead);
+                s +=readstring;
+            }
+            InputRead.close();
+            localscore = Integer.parseInt(s);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -88,6 +145,10 @@ public class MainActivity extends BaseGameActivity{
         }
     }
 
+    public int getLocalscore() {
+        return localscore;
+    }
+
     public void updateScore(int score){
         if(getApiClient().isConnected()){
             if(score > 500){
@@ -107,8 +168,12 @@ public class MainActivity extends BaseGameActivity{
             }
             Games.Leaderboards.submitScore(getApiClient(), getString(R.string.leaderboard_id), score);
         }else {
-            Toast.makeText(this,"Not logged in",
-                    Toast.LENGTH_LONG).show();
+            if (localscore < score){
+                saveFile(score);
+                localscore = score;
+                localUnlockOutfit();
+
+            }
         }
     }
 
@@ -140,5 +205,6 @@ public class MainActivity extends BaseGameActivity{
                     }
                 });
     }
+
 
 }

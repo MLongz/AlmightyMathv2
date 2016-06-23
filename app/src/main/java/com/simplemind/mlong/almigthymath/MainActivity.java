@@ -31,6 +31,7 @@ public class MainActivity extends BaseGameActivity{
         gp = new GamePanel(this);
         gameHelper = new GameHelper(this, GameHelper.CLIENT_GAMES);
         gameHelper.setup(this);
+        gameHelper.setMaxAutoSignInAttempts(0);
         firstTime = true;
         readFile();
     }
@@ -148,6 +149,7 @@ public class MainActivity extends BaseGameActivity{
     public int getLocalscore() {
         return localscore;
     }
+
 
     public void updateScore(int score){
         if(getApiClient().isConnected()){

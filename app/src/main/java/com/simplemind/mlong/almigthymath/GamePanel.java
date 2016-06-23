@@ -230,9 +230,6 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
                 }
                 if(rHighScore.contains(touchX, touchY)){
                     if(mActivity.isSignedIn()){
-                        player.setPlaying(true);
-                        showMenu = false;
-                        newGame();
                         mActivity.showLeaderboard();
                         showMenu = true;
                     }else {
@@ -306,7 +303,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
                                     BitmapFactory.decodeResource(getResources(), R.drawable.explosion), 336, 287, 8);
                             explosion.setExploded(true);
                             changePowerBar();
-                            player.setScore(500);
+                            player.setScore(10);
                             mathTask.MathAnswersList.remove(i);
                             monsterDisapearStartTime = System.nanoTime();
                             getNewTask = true;
